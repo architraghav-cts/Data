@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FleetOps — Register Vehicle</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --sidebar-bg: #0f172a; --sidebar-width: 240px;
+            --surface: #fff; --bg: #f1f5f9; --text-primary: #0f172a;
+            --text-secondary: #64748b; --border: #e2e8f0; --radius: 12px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 4px 16px rgba(0,0,0,0.06);
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); display: flex; min-height: 100vh; color: var(--text-primary); }
+        .sidebar { width: var(--sidebar-width); background: var(--sidebar-bg); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; overflow-y: auto; }
+        .sidebar-brand { padding: 24px 20px 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .sidebar-brand .icon { width: 38px; height: 38px; background: linear-gradient(135deg, #4f9cf9, #6366f1); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+        .sidebar-brand .name { font-size: 17px; font-weight: 700; color: #fff; }
+        .sidebar-brand .role { font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 500; margin-top: 1px; }
+        .sidebar-nav { padding: 16px 12px; flex: 1; }
+        .nav-section-label { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.3); letter-spacing: 1.2px; text-transform: uppercase; padding: 12px 8px 6px; }
+        .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; color: rgba(255,255,255,0.6); font-size: 13.5px; font-weight: 500; text-decoration: none; margin-bottom: 2px; transition: background 0.15s, color 0.15s; }
+        .nav-item:hover { background: rgba(255,255,255,0.07); color: #fff; }
+        .nav-item.active { background: rgba(79,156,249,0.18); color: #4f9cf9; }
+        .nav-item .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+        .sidebar-footer { padding: 12px; border-top: 1px solid rgba(255,255,255,0.06); }
+        .btn-logout { display: flex; align-items: center; gap: 10px; padding: 10px 12px; width: 100%; border-radius: 8px; background: rgba(239,68,68,0.12); color: #f87171; font-size: 13.5px; font-weight: 500; font-family: 'Inter', sans-serif; border: none; cursor: pointer; text-decoration: none; transition: background 0.15s; }
+        .btn-logout:hover { background: rgba(239,68,68,0.2); }
+        .main { margin-left: var(--sidebar-width); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+        .topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+        .topbar-title { font-size: 18px; font-weight: 700; }
+        .topbar-sub { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+        .avatar { width: 36px; height: 36px; background: linear-gradient(135deg, #4f9cf9, #6366f1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #fff; }
+        .content { padding: 28px 32px; flex: 1; }
+
+        /* Form card */
+        .form-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 36px 40px;
+            max-width: 720px;
+        }
+
+        .form-card-header { margin-bottom: 28px; }
+        .form-card-header h2 { font-size: 20px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+        .form-card-header p { font-size: 13.5px; color: var(--text-secondary); }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .form-group { display: flex; flex-direction: column; gap: 7px; }
+        .form-group.full { grid-column: span 2; }
+
+        .form-group label {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #374151;
+            letter-spacing: 0.2px;
+        }
+
+        .form-group input {
+            padding: 12px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 9px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            background: #f8fafc;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: #4f9cf9;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(79,156,249,0.15);
+        }
+
+        .form-group input::placeholder { color: #94a3b8; }
+
+        .divider { grid-column: span 2; height: 1px; background: var(--border); margin: 4px 0; }
+
+        .btn-submit {
+            grid-column: span 2;
+            padding: 14px;
+            background: linear-gradient(135deg, #1e3a5f, #2563eb);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.15s;
+            margin-top: 6px;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-submit:hover { opacity: 0.92; transform: translateY(-1px); }
+        .btn-submit:active { transform: translateY(0); }
+        .btn-submit:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
+
+        .alert {
+            grid-column: span 2;
+            padding: 13px 16px;
+            border-radius: 9px;
+            font-size: 13.5px;
+            font-weight: 500;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .alert-success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; display: flex; }
+        .alert-error { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; display: flex; }
+    </style>
+</head>
+<body>
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <div class="icon">🚛</div>
+        <div><div class="name">FleetOps</div><div class="role">Fleet Manager</div></div>
+    </div>
+    <nav class="sidebar-nav">
+        <div class="nav-section-label">Overview</div>
+        <a class="nav-item" href="/admin/dashboard"><span class="nav-icon">📊</span> Admin Dashboard</a>
+        <div class="nav-section-label">Modules</div>
+        <a class="nav-item active" href="/fleet/register-vehicle"><span class="nav-icon">🚗</span> Fleet Manager</a>
+        <a class="nav-item" href="/analyst/dashboard"><span class="nav-icon">⛽</span> Fuel Analytics</a>
+        <a class="nav-item" href="/driver/dashboard"><span class="nav-icon">👤</span> Driver Dashboard</a>
+        <a class="nav-item" href="/safety/dashboard"><span class="nav-icon">🛡</span> Safety Dashboard</a>
+        <a class="nav-item" href="/service/dashboard"><span class="nav-icon">🔧</span> Service Dashboard</a>
+        <a class="nav-item" href="/trip/dashboard"><span class="nav-icon">🗺</span> Trip Dashboard</a>
+    </nav>
+    <div class="sidebar-footer"><a class="btn-logout" href="/logout"><span>⬅</span> Sign Out</a></div>
+</aside>
+
+<div class="main">
+    <header class="topbar">
+        <div>
+            <div class="topbar-title">Register Vehicle</div>
+            <div class="topbar-sub">Add a new vehicle to the fleet</div>
+        </div>
+        <div class="avatar">F</div>
+    </header>
+    <div class="content">
+        <div class="form-card">
+            <div class="form-card-header">
+                <h2>🚗 New Vehicle Registration</h2>
+                <p>Fill in the vehicle details below to add it to the fleet management system.</p>
+            </div>
+
+            <form id="vehicleForm" class="form-grid">
+                <div class="form-group">
+                    <label for="vin">VIN (Vehicle Identification Number)</label>
+                    <input type="text" id="vin" name="vin" placeholder="e.g. 1HGCM82633A004352" required />
+                </div>
+                <div class="form-group">
+                    <label for="registrationNumber">Registration Number</label>
+                    <input type="text" id="registrationNumber" name="registrationNumber" placeholder="e.g. MH-12-AB-1234" required />
+                </div>
+                <div class="form-group">
+                    <label for="vehicleType">Vehicle Type</label>
+                    <input type="text" id="vehicleType" name="vehicleType" placeholder="e.g. Truck, Car, Bus" required />
+                </div>
+                <div class="form-group">
+                    <label for="deviceImei">Device IMEI</label>
+                    <input type="text" id="deviceImei" name="deviceImei" placeholder="15-digit IMEI number" required />
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="form-group full">
+                    <label for="fleetManagerEmail">Fleet Manager Email</label>
+                    <input type="email" id="fleetManagerEmail" name="fleetManagerEmail" placeholder="manager@company.com" required />
+                </div>
+
+                <div id="alertBox" class="alert"></div>
+                <button type="submit" class="btn-submit" id="submitBtn">Register Vehicle</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const form = document.getElementById('vehicleForm');
+    const alertBox = document.getElementById('alertBox');
+    const submitBtn = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        alertBox.className = 'alert';
+        alertBox.style.display = 'none';
+        submitBtn.textContent = 'Registering...';
+        submitBtn.disabled = true;
+
+        try {
+            const res = await fetch('/api/fleet/vehicles', {
+                method: 'POST',
+                body: new URLSearchParams(new FormData(form))
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                alertBox.className = 'alert alert-success';
+                alertBox.innerHTML = '✅ ' + (data.message || 'Vehicle registered successfully!');
+                form.reset();
+            } else {
+                alertBox.className = 'alert alert-error';
+                alertBox.innerHTML = '❌ ' + (data.message || 'Registration failed.');
+            }
+            alertBox.style.display = 'flex';
+        } catch(err) {
+            alertBox.className = 'alert alert-error';
+            alertBox.innerHTML = '❌ Server error. Please try again.';
+            alertBox.style.display = 'flex';
+        } finally {
+            submitBtn.textContent = 'Register Vehicle';
+            submitBtn.disabled = false;
+        }
+    });
+</script>
+
+</body>
+</html>

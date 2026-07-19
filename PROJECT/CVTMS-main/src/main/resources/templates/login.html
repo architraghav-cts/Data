@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FleetOps  Sign In</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            background: #0f172a;
+        }
+
+        /*  Left panel  */
+        .panel-left {
+            flex: 1.1;
+            background: linear-gradient(145deg, #1e3a5f 0%, #0f172a 60%, #1a2744 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 64px 56px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel-left::before {
+            content: '';
+            position: absolute;
+            width: 420px; height: 420px;
+            background: radial-gradient(circle, rgba(79,156,249,0.18) 0%, transparent 70%);
+            top: -80px; left: -80px;
+            border-radius: 50%;
+        }
+
+        .panel-left::after {
+            content: '';
+            position: absolute;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%);
+            bottom: 60px; right: -60px;
+            border-radius: 50%;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 56px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand-icon {
+            width: 48px; height: 48px;
+            background: linear-gradient(135deg, #4f9cf9, #6366f1);
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px;
+        }
+
+        .brand-name {
+            font-size: 26px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.5px;
+        }
+
+        .hero-title {
+            font-size: 42px;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-title span {
+            background: linear-gradient(90deg, #4f9cf9, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 16px;
+            color: rgba(255,255,255,0.6);
+            line-height: 1.7;
+            max-width: 340px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-list {
+            margin-top: 48px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: rgba(255,255,255,0.75);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .feature-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4f9cf9, #6366f1);
+            flex-shrink: 0;
+        }
+
+        /*  Right panel  */
+        .panel-right {
+            flex: 0.9;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 64px 56px;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 380px;
+        }
+
+        .login-box h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+
+        .login-box p {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 36px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 13px 16px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            color: #0f172a;
+            background: #f8fafc;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: #4f9cf9;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(79,156,249,0.15);
+        }
+
+        .form-group input::placeholder { color: #94a3b8; }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #1e3a5f, #2563eb);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.15s;
+            margin-top: 8px;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-login:hover { opacity: 0.92; transform: translateY(-1px); }
+        .btn-login:active { transform: translateY(0); }
+
+        .error-box {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-note {
+            margin-top: 32px;
+            text-align: center;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        @media (max-width: 768px) {
+            .panel-left { display: none; }
+            .panel-right { padding: 40px 28px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="panel-left">
+    <div class="brand">
+        <div class="brand-icon">🚛</div>
+        <span class="brand-name">FleetOps</span>
+    </div>
+
+    <h1 class="hero-title">Manage your<br><span>fleet smarter</span></h1>
+    <p class="hero-subtitle">Real-time telematics, driver safety analytics, fuel monitoring, and maintenance  all in one platform.</p>
+
+    <div class="feature-list">
+        <div class="feature-item"><div class="feature-dot"></div> Live trip tracking & route monitoring</div>
+        <div class="feature-item"><div class="feature-dot"></div> Driver safety scoring & alerts</div>
+        <div class="feature-item"><div class="feature-dot"></div> Fuel consumption analytics</div>
+        <div class="feature-item"><div class="feature-dot"></div> Predictive maintenance scheduling</div>
+    </div>
+</div>
+
+<div class="panel-right">
+    <div class="login-box">
+        <h2>Welcome back</h2>
+        <p>Sign in to your FleetOps account</p>
+
+        <div class="error-box" id="error-box" style="display:none;">
+            Invalid email or password. Please try again.
+        </div>
+
+        <form action="/login" method="post">
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input type="email" id="email" name="email" placeholder="you@company.com" required autofocus />
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required />
+            </div>
+            <button type="submit" class="btn-login">Sign in to FleetOps</button>
+        </form>
+
+        <p class="footer-note"> 2026 FleetOps  Telematics Fleet Management System</p>
+    </div>
+</div>
+
+<script>
+    if (new URLSearchParams(window.location.search).has('error')) {
+        document.getElementById('error-box').style.display = 'flex';
+    }
+</script>
+</body>
+</html>
